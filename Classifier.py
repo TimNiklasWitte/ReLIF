@@ -33,7 +33,23 @@ class Classifier(nn.Module):
 
      
         self.cce_rate_loss = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.0001)
+        #self.optimizer = torch.optim.Adam(self.parameters(), lr=0.0001)
+
+        resonator_params = []
+        other_params = []
+
+        for name, p in self.named_parameters():
+            if any(k in name for k in ["resonating_logit", "freq_logit", "phase_logit"]):
+                resonator_params.append(p)
+            else:
+                other_params.append(p)
+
+        self.optimizer = torch.optim.Adam([
+            {"params": other_params, "lr": 1e-4},
+            {"params": resonator_params, "lr": 1e-2},   # much higher LR
+        ])
+
+
 
         #
         # Metrics

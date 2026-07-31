@@ -23,7 +23,7 @@ class ReLIF(nn.Module):
             torch.empty(n_hidden).uniform_(-2, 2)
         )
 
-        self.freq_max = 50
+        self.freq_max = 8
         self.freq_logit = nn.Parameter(
             torch.empty(n_hidden).uniform_(-2, 2)
         )
@@ -56,7 +56,7 @@ class ReLIF(nn.Module):
 
         resonating = torch.sigmoid(self.resonating_logit)
 
-        resonator_activation = resonating * torch.sin(
+        resonator_activation = 0.5 * resonating * torch.sin(
             2 * torch.pi * freq * t + phase
         )
 
