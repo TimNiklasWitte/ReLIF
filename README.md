@@ -1,6 +1,11 @@
 
 # Training
 
+
+<img src="./plotting/plots/AccuracyLoss_NMMNIST.png" style="width:50%;">
+
+<img src="./plotting/plots/AccuracyLoss_SHD.png" style="width:50%;">
+
 ## Train accuracy
 
 | Model | NMMNIST | SHD |
@@ -20,3 +25,11 @@
 | ReLIF_2 | 0.93960 | 0.82946 |
 | ReLIF_4 | 0.93680 | 0.84152 |
 | ReLIF_8 | 0.93800 | 0.85089 |
+
+# Phase Frequency Plots
+
+## Neuromorphic MNIST
+
+### ReLIF_1
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_1/Epoch_0.png" style="width:75%;">
