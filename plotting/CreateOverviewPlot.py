@@ -64,7 +64,7 @@ def main():
 
     # Resonator drive
     axes[1].plot(resonator_activation_plot, color="tab:green", linewidth=2)
-    axes[1].set_ylabel(r"$resonator_activation_t$")
+    axes[1].set_ylabel(r"resonator_activation$_t$")
     axes[1].grid(True)
 
 
