@@ -5,18 +5,26 @@ from torch.utils.tensorboard import SummaryWriter
 from snntorch import functional as SF
 
 import tqdm
+import sys
+import os
 
+from NMNIST import *
+from SHD import *
+from Classifier_LIF import *
+from Classifier_ReLIF import *
 
-from N_MNIST import *
-from Classifier import *
-
-NUM_EPOCHS = 16
+NUM_EPOCHS = 100
 
 BATCH_SIZE = 64
 NUM_THREADS = 2 # set lower! It needs a lot of shared memory
 
+n_hidden = 128
 
 def main():
+    
+    dataset_name = sys.argv[1]
+    model_name = sys.argv[2]
+    
 
     #
     # Device
@@ -29,9 +37,23 @@ def main():
     # Dataset
     #
     
+    if dataset_name == "NMMNIST":
 
-    train_ds = N_MNIST(split="Train")
-    test_ds = N_MNIST(split="Test")
+        train_ds = NMMNIST(split="Train")
+        test_ds = NMMNIST(split="Test")
+
+        input_size = 68*68
+        n_classes = 10
+        
+            
+
+    elif dataset_name == "SHD":
+
+        train_ds = SHD(split="train")
+        test_ds = SHD(split="test")
+
+        input_size = 700
+        n_classes = 20
 
 
     #
@@ -56,20 +78,38 @@ def main():
                              persistent_workers=False
                         )
 
-    #
-    # Logging
-    #
-
-    file_path = f"./logs/"
-
-    writer = SummaryWriter(file_path)
 
     #
     # Init Model
     #
 
-    model = Classifier()
+    if model_name == "LIF":
+
+        model = Classifier_LIF(input_size=input_size, n_hidden=n_hidden, n_classes=n_classes)
+         
+        run_id = f"{dataset_name}_{model_name}"
+
+    elif model_name == "ReLIF":
+        freq_max = int(sys.argv[3])
+        model = Classifier_ReLIF(input_size=input_size, n_hidden=n_hidden, freq_max=freq_max, n_classes=n_classes)
+        
+        
+        run_id = f"{dataset_name}_{model_name}_{freq_max}"
+
+    else:
+        print(f"invalid model_name: {model_name}")
+
     model.to(device)
+    
+    print(run_id)
+
+    #
+    # Logging
+    #
+
+    file_path = f"./logs/{run_id}/"
+
+    writer = SummaryWriter(file_path)
 
     #
     # Train loop
@@ -156,7 +196,8 @@ def main():
         
         writer.flush()
 
-        torch.save(model.state_dict(), f"./saved_models/{epoch}")
+        os.makedirs(f"./saved_models/{run_id}", exist_ok=True)
+        torch.save(model.state_dict(), f"./saved_models/{run_id}/{epoch}")
 
     
 if __name__ == "__main__":

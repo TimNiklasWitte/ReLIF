@@ -6,7 +6,7 @@ import torch.nn as nn
 class ReLIF(nn.Module):
  
 
-    def __init__(self, beta, n_hidden):
+    def __init__(self, beta, n_hidden, freq_max):
         super().__init__()
 
         self.beta = beta
@@ -23,7 +23,7 @@ class ReLIF(nn.Module):
             torch.empty(n_hidden).uniform_(-2, 2)
         )
 
-        self.freq_max = 8
+        self.freq_max = freq_max
         self.freq_logit = nn.Parameter(
             torch.empty(n_hidden).uniform_(-2, 2)
         )
