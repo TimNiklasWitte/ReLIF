@@ -1,3 +1,5 @@
+# ReLIF: Resonator-extended Leaky Integrate-and-Fire Neuron
+
 
 # Training
 
