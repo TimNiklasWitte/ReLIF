@@ -71,8 +71,8 @@ def main():
     axes[0].set_yticks([])
 
 
-    axes[1].plot(V_lif_plot, label="V_lif", linewidth=2)
-    axes[1].plot(V_res_plot, label="V_res", linewidth=2)
+    axes[1].plot(V_lif_plot, label="Integrator", linewidth=2)
+    axes[1].plot(V_res_plot, label="Resonator", linewidth=2)
     axes[1].axhline(1.0, color="red", linestyle="--", alpha=0.6, label="Threshold")
     axes[1].set_ylabel("Membrane Potential")
     axes[1].legend()
