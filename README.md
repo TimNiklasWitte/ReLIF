@@ -1,6 +1,8 @@
 # ReLIF: Resonator-extended Leaky Integrate-and-Fire Neuron
 
 
+<img src="./plotting/plots/CompareIntRes.png" style="width:50%;">
+
 # Training
 
 
