@@ -86,7 +86,7 @@ def main():
     axes[3].set_xlabel("Time step")
 
     plt.tight_layout()
-    plt.savefig("./plots/Overview.png", dpi=200)
+    plt.savefig("./plots/OverviewBug.png", dpi=200)
     plt.show()
 
 
