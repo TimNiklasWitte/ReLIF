@@ -76,7 +76,7 @@ def main():
     axes[1].axhline(1.0, color="red", linestyle="--", alpha=0.6, label="Threshold")
     axes[1].set_ylabel("Membrane Potential")
     axes[1].legend()
-
+    axes[1].grid(True)
   
     axes[2].eventplot(
         [
@@ -87,7 +87,7 @@ def main():
         lineoffsets=[1, 0],
         linelengths=0.8
     )
-    
+
     axes[2].set_yticks([1, 0])
     axes[2].set_yticklabels(["LIF", "Res"])
     axes[2].set_ylabel("Output")
