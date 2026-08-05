@@ -74,16 +74,15 @@ def main():
                 checkpoint = torch.load(f"./../saved_models/{dataset_name}_ReLIF_{freq_max}/{epoch}", map_location=device)
                 model.load_state_dict(checkpoint)
 
-                # Create figure with GridSpec to reserve space for colorbar
+                
                 fig = plt.figure(figsize=(14, 6))
-                gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 0.05])  # 3 columns: 2 subplots + colorbar space
-
-                # Create subplots
+                gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 0.05])  
+         
                 ax1 = fig.add_subplot(gs[0])
                 ax2 = fig.add_subplot(gs[1])
                 cbar_ax = fig.add_subplot(gs[2])
 
-                # First subplot (Hidden Layer)
+            
                 relif_1_freq = model.relif_1.freq_max * torch.sigmoid(model.relif_1.freq_logit.detach())
                 relif_1_freq = relif_1_freq.numpy()
 
@@ -101,12 +100,12 @@ def main():
                 ax1.set_title('Hidden Layer', fontsize=14)
                 ax1.grid(True, alpha=0.3)
 
-                # Set y-axis ticks and labels for phase in terms of π
+            
                 ax1.set_yticks([0, np.pi/4, np.pi/2, 3*np.pi/4, np.pi, 5*np.pi/4, 3*np.pi/2, 7*np.pi/4, 2*np.pi])
                 ax1.set_yticklabels(['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', 
                                     r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$', r'$2\pi$'])
 
-                # Second subplot (Output Layer)
+              
                 relif_2_freq = model.relif_2.freq_max * torch.sigmoid(model.relif_2.freq_logit.detach())
                 relif_2_freq = relif_2_freq.numpy()
 
@@ -124,14 +123,14 @@ def main():
                 ax2.set_title('Output Layer', fontsize=14)
                 ax2.grid(True, alpha=0.3)
 
-                # Set y-axis ticks and labels for phase in terms of π
+            
                 ax2.set_yticks([0, np.pi/4, np.pi/2, 3*np.pi/4, np.pi, 5*np.pi/4, 3*np.pi/2, 7*np.pi/4, 2*np.pi])
                 ax2.set_yticklabels(['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', 
                                     r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$', r'$2\pi$'])
 
-                # Add single colorbar on the right side of the figure (outside subplots)
+               
                 cbar = fig.colorbar(scatter1, cax=cbar_ax)
-                # Force colorbar limits to 0-1 by setting on the mappable
+               
                 scatter1.set_clim(0, 1)
                 cbar.set_label('Resonating', fontsize=12)
 

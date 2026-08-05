@@ -24,7 +24,7 @@ def main():
 
         df = pd.concat(df_list)
         
-        # Create lineplots with legend='full' to get proper labels
+       
         sns.lineplot(data=df, x="Epoch", y="train accuracy", hue="model name", ax=axes[0][0], alpha=0.7, legend='full')
         axes[0][0].get_legend().remove()
         axes[0][0].set_title("Train accuracy")
@@ -49,10 +49,9 @@ def main():
         axes[1][1].set_ylabel("Loss")
         axes[1][1].grid(True)
 
-        # Get handles and labels from first subplot
         handles, labels = axes[0][0].get_legend_handles_labels()
         
-        # Create single legend below the subplots (moved closer with bbox_to_anchor)
+
         fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, 0.03), 
                 ncol=3, frameon=True, fontsize=9)
 
@@ -70,7 +69,6 @@ def main():
 
         plt.suptitle(dataset_name, y=0.995)
         
-        # Adjust bottom margin to reduce space (0.10 instead of 0.12)
         plt.tight_layout(rect=[0, 0.10, 1, 0.98])
         plt.savefig(f"./plots/AccuracyLoss_{dataset_name}.png", dpi=200, bbox_inches='tight')
         
