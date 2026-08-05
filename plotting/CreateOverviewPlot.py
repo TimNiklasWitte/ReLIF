@@ -64,7 +64,7 @@ def main():
 
     # Resonator drive
     axes[1].plot(resonator_activation_plot, color="tab:green", linewidth=2)
-    axes[1].set_ylabel("resonator_activation")
+    axes[1].set_ylabel(r"$resonator_activation_t$")
     axes[1].grid(True)
 
 
@@ -80,7 +80,7 @@ def main():
     # Membrane potential
     axes[3].plot(V_total, color="tab:blue", linewidth=2, label="V")
     axes[3].axhline(1.0, color="red", linestyle="--", alpha=0.7, label="Threshold")
-    axes[3].set_ylabel(r"$V_t$")
+    axes[3].set_ylabel(r"$Vtotal_t$")
     axes[3].legend()
     axes[3].grid(True)
 
