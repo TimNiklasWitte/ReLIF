@@ -28,8 +28,54 @@
 
 # Phase Frequency Plots
 
-## Neuromorphic MNIST
+## Neuromorphic MNIST (NMMNIST)
 
 ### ReLIF_1
 
 <img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_1/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_1/Epoch_98.png" style="width:75%;">
+
+### ReLIF_2
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_2/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_2/Epoch_98.png" style="width:75%;">
+
+### ReLIF_4
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_4/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_4/Epoch_93.png" style="width:75%;">
+
+### ReLIF_8
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_8/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/NMMNIST_ReLIF_8/Epoch_75.png" style="width:75%;">
+
+## Spiking Heidelberg Digits (SHD)
+
+### ReLIF_1
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_1/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_1/Epoch_86.png" style="width:75%;">
+
+### ReLIF_2
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_2/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_2/Epoch_69.png" style="width:75%;">
+
+### ReLIF_4
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_4/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_4/Epoch_93.png" style="width:75%;">
+
+### ReLIF_8
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_8/Epoch_0.png" style="width:75%;">
+
+<img src="./plotting/plots/FreqPhasePlots/SHD_ReLIF_8/Epoch_83.png" style="width:75%;">
