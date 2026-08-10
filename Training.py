@@ -12,8 +12,9 @@ from NMNIST import *
 from SHD import *
 from Classifier_LIF import *
 from Classifier_ReLIF import *
+from Classifier_ReLIF_fixed import *
+from TimSNet import *
 
-NUM_EPOCHS = 100
 
 BATCH_SIZE = 64
 NUM_THREADS = 2 # set lower! It needs a lot of shared memory
@@ -44,6 +45,8 @@ def main():
 
         input_size = 68*68
         n_classes = 10
+
+        NUM_EPOCHS = 100
         
             
 
@@ -54,6 +57,12 @@ def main():
 
         input_size = 700
         n_classes = 20
+
+        NUM_EPOCHS = 300
+
+    else:
+        print(f"invalid dataset_name: {dataset_name}")
+        exit(0)
 
 
     #
@@ -96,8 +105,23 @@ def main():
         
         run_id = f"{dataset_name}_{model_name}_{freq_max}"
 
+    elif model_name == "ReLIF_fixed":
+        freq_max = int(sys.argv[3])
+        model = Classifier_ReLIF_fixed(input_size=input_size, n_hidden=n_hidden, freq_max=freq_max, n_classes=n_classes)
+        
+        
+        run_id = f"{dataset_name}_{model_name}_{freq_max}"
+
+    elif model_name == "TimSNet":
+        freq_max = int(sys.argv[3])
+        model = TimSNet(input_size=input_size, n_hidden=n_hidden, freq_max=freq_max, n_classes=n_classes)
+        
+        
+        run_id = f"{dataset_name}_{model_name}_{freq_max}"
+
     else:
         print(f"invalid model_name: {model_name}")
+        exit(0)
 
     model.to(device)
     
@@ -114,6 +138,9 @@ def main():
     #
     # Train loop
     #
+
+    best_test_accuracy = 0
+
     for epoch in range(NUM_EPOCHS):
         
         print(f"Epoch {epoch}")
@@ -197,8 +224,13 @@ def main():
         writer.flush()
 
         os.makedirs(f"./saved_models/{run_id}", exist_ok=True)
-        torch.save(model.state_dict(), f"./saved_models/{run_id}/{epoch}")
 
+        if best_test_accuracy < test_accuracy:
+            best_test_accuracy = test_accuracy
+            torch.save(model.state_dict(), f"./saved_models/{run_id}/current")
+
+        if epoch == 0:
+            torch.save(model.state_dict(), f"./saved_models/{run_id}/init")
     
 if __name__ == "__main__":
     try:

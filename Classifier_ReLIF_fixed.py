@@ -8,11 +8,11 @@ from torchmetrics import MeanMetric
 
 import tqdm
 
-from LIF import *
+from ReLIF_fixed import *
 
 
-class Classifier_LIF(nn.Module):
-    def __init__(self, input_size, n_hidden, n_classes):
+class Classifier_ReLIF_fixed(nn.Module):
+    def __init__(self, input_size, n_hidden, freq_max, n_classes):
         super().__init__()
 
         self.num_steps = 300
@@ -22,16 +22,30 @@ class Classifier_LIF(nn.Module):
         #
 
         self.linear = nn.Linear(input_size, n_hidden)
-        self.lif_1 = LIF(0.9, n_hidden)
+        self.relif_1 = ReLIF_fixed(0.9, n_hidden, freq_max)
 
 
         self.linear_output = nn.Linear(n_hidden, n_classes)
-        self.lif_2 = LIF(0.9, n_classes)
+        self.relif_2 = ReLIF_fixed(0.9, n_classes, freq_max)
 
 
      
         self.cce_rate_loss = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.0001)
+      
+        resonator_params = []
+        other_params = []
+
+        for name, p in self.named_parameters():
+            if any(k in name for k in ["resonating_logit", "freq_logit", "phase_logit"]):
+                resonator_params.append(p)
+            else:
+                other_params.append(p)
+
+        self.optimizer = torch.optim.Adam([
+            {"params": other_params, "lr": 1e-4},
+            {"params": resonator_params, "lr": 1e-2},   # much higher LR
+        ])
+
 
 
         #
@@ -41,13 +55,12 @@ class Classifier_LIF(nn.Module):
         self.loss_metric = MeanMetric()
         self.accuracy_metric = MeanMetric()
 
-
+ 
     def forward(self, x):
         
-        batch_size = x.shape[1]
-
-        self.lif_1.reset_mem()
-        self.lif_2.reset_mem()
+    
+        self.relif_1.reset_mem()
+        self.relif_2.reset_mem()
 
         #
         # Readout
@@ -55,7 +68,6 @@ class Classifier_LIF(nn.Module):
 
       
         spk_out_list = []
-
 
         t_values = torch.linspace(0, 1, self.num_steps)
 
@@ -65,11 +77,11 @@ class Classifier_LIF(nn.Module):
 
             x_t = self.linear(x[t, ...])
             
-            spikes, _ = self.lif_1(t_values[t], x_t)
+            spikes, _ = self.relif_1(t_values[t], x_t)
 
             spikes = self.linear_output(spikes)
          
-            spikes_output, _ = self.lif_2(t_values[t], spikes)
+            spikes_output, _ = self.relif_2(t_values[t], spikes)
 
 
             spk_out_list.append(spikes_output)

@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 
-class ReLIF(nn.Module):
+class ReLIF_fixed(nn.Module):
  
 
     def __init__(self, beta, n_hidden, freq_max):
@@ -65,11 +65,11 @@ class ReLIF(nn.Module):
         # LIF
         #
 
-        spk = self.spike_gradient(self.mem, self.threshold)
+        spk = self.spike_gradient(self.mem + resonator_activation, self.threshold)
 
 
         reset = (self.beta * spk * self.threshold).detach()
-        self.mem = self.beta * self.mem + input_ + resonator_activation - reset
+        self.mem = self.beta * self.mem + input_ - reset
 
         return spk.float(), self.mem
     

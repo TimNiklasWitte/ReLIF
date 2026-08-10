@@ -11,7 +11,7 @@ import tqdm
 from ReLIF import *
 
 
-class Classifier_ReLIF(nn.Module):
+class TimSNet(nn.Module):
     def __init__(self, input_size, n_hidden, freq_max, n_classes):
         super().__init__()
 
@@ -21,12 +21,22 @@ class Classifier_ReLIF(nn.Module):
         # Initialize layers
         #
 
-        self.linear = nn.Linear(input_size, n_hidden)
+        self.input_modulation = self.InputModulation().apply
+
+        self.linear_1 = nn.Linear(input_size, n_hidden)
         self.relif_1 = ReLIF(0.9, n_hidden, freq_max)
 
+        self.linear_2 = nn.Linear(n_hidden, n_hidden)
+        self.relif_2 = ReLIF(0.9, n_hidden, freq_max)
+
+        self.linear_3 = nn.Linear(n_hidden, n_hidden)
+        self.relif_3 = ReLIF(0.9, n_hidden, freq_max)
+
+        self.linear_4 = nn.Linear(n_hidden, n_hidden)
+        self.relif_4 = ReLIF(0.9, n_hidden, freq_max)
 
         self.linear_output = nn.Linear(n_hidden, n_classes)
-        self.relif_2 = ReLIF(0.9, n_classes, freq_max)
+        self.relif_output = ReLIF(0.9, n_classes, freq_max)
 
 
      
@@ -46,7 +56,7 @@ class Classifier_ReLIF(nn.Module):
             {"params": resonator_params, "lr": 1e-2},   # much higher LR
         ])
 
-
+        # , weight_decay=1e-4
 
         #
         # Metrics
@@ -55,12 +65,15 @@ class Classifier_ReLIF(nn.Module):
         self.loss_metric = MeanMetric()
         self.accuracy_metric = MeanMetric()
 
- 
+  
+
     def forward(self, x):
-        
-    
+
         self.relif_1.reset_mem()
         self.relif_2.reset_mem()
+        self.relif_3.reset_mem()
+        self.relif_4.reset_mem()
+        self.relif_output.reset_mem()
 
         #
         # Readout
@@ -69,19 +82,31 @@ class Classifier_ReLIF(nn.Module):
       
         spk_out_list = []
 
+
+        x_modulated = self.temporal_smooth(x, alpha=0.9355)
+
         t_values = torch.linspace(0, 1, self.num_steps)
 
         for t in range(self.num_steps):
             
             # x: (t, bs, d) = (300, 64, 4624)
 
-            x_t = self.linear(x[t, ...])
-            
-            spikes, _ = self.relif_1(t_values[t], x_t)
+     
+            x_t = self.linear_1(x[t, ...])
+            x_t, _ = self.relif_1(t_values[t], x_t)
 
-            spikes = self.linear_output(spikes)
+            x_t = self.linear_2(x_t)
+            x_t, _ = self.relif_2(t_values[t], x_t)
+
+            x_t = self.linear_3(x_t)
+            x_t, _ = self.relif_3(t_values[t], x_t)
+
+            x_t = self.linear_4(x_t)
+            x_t, _ = self.relif_4(t_values[t], x_t)
+
+            spikes = self.linear_output(x_t)
          
-            spikes_output, _ = self.relif_2(t_values[t], spikes)
+            spikes_output, _ = self.relif_output(t_values[t], spikes)
 
 
             spk_out_list.append(spikes_output)
@@ -138,3 +163,25 @@ class Classifier_ReLIF(nn.Module):
      
     
         return test_loss, test_accuracy
+    
+
+    class InputModulation(torch.autograd.Function):
+
+        def __init__(self):
+            super().__init__()
+
+            self.decay = 0.9355
+
+        @staticmethod
+        def forward(ctx, x_t, x_t_modulated):
+      
+            ctx.save_for_backward(x_t_modulated)
+            return x_t
+
+        @staticmethod
+        def backward(ctx, grad_output):
+            (x_t_modulated,) = ctx.saved_tensors
+ 
+            grad = x_t_modulated * grad_output
+            
+            return grad
