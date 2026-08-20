@@ -63,15 +63,14 @@ def main():
 
             df = load_dataframe(log_dir)
 
-            test_accuracy = df.loc[:, "test accuracy"]
-            best_model_idx = np.argmax(test_accuracy)
+         
 
-            for epoch in [0, best_model_idx]:
+            for name in ["init", "current"]:
                 
     
                 model = Classifier_ReLIF(input_size=input_size, n_hidden=n_hidden, n_classes=n_classes, freq_max=freq_max)
 
-                checkpoint = torch.load(f"./../saved_models/{dataset_name}_ReLIF_{freq_max}/{epoch}", map_location=device)
+                checkpoint = torch.load(f"./../saved_models/{dataset_name}_ReLIF_{freq_max}/{name}", map_location=device)
                 model.load_state_dict(checkpoint)
 
                 
@@ -134,10 +133,13 @@ def main():
                 scatter1.set_clim(0, 1)
                 cbar.set_label('Resonating', fontsize=12)
 
-                plt.suptitle(f"Epoch: {epoch}", fontsize=16)
+                if name == "current":
+                    name = "after training"
+                plt.suptitle(name, fontsize=16)
+                
                 plt.tight_layout()
                 os.makedirs(f"./plots/FreqPhasePlots/{dataset_name}_ReLIF_{freq_max}", exist_ok=True)
-                plt.savefig(f"./plots/FreqPhasePlots/{dataset_name}_ReLIF_{freq_max}/Epoch_{epoch}.png", dpi=200)
+                plt.savefig(f"./plots/FreqPhasePlots/{dataset_name}_ReLIF_{freq_max}/{name}.png", dpi=200)
                                 
                 plt.clf()
                 plt.close()

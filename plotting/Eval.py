@@ -9,7 +9,7 @@ def main():
     root = "../logs"
 
     dataset_name_list = ["NMMNIST", "SHD"]
-    model_name_list = ["LIF", "ReLIF_1", "ReLIF_2", "ReLIF_4", "ReLIF_8"]
+    model_name_list = ["LIF", "ReLIF_1", "ReLIF_2", "ReLIF_4", "ReLIF_8", "ReLIF_fixed_1", "ReLIF_fixed_2", "ReLIF_fixed_4", "ReLIF_fixed_8"]
 
 
     for dataset_name in dataset_name_list:
